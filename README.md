@@ -1,3 +1,9 @@
+![Workflow](https://img.shields.io/github/actions/workflow/status/migueldecode/legion-del-mal/ci.yml)
+![Release](https://img.shields.io/github/v/release/migueldecode/legion-del-mal)
+![Issues](https://img.shields.io/github/issues/migueldecode/legion-del-mal)
+![Último commit](https://img.shields.io/github/last-commit/migueldecode/legion-del-mal)
+![Licencia](https://img.shields.io/github/license/migueldecode/legion-del-mal)
+
 # 🦹‍♂️ La Legión del Mal
 
 > _"El mundo no se conquista con fuerza bruta, se conquista con un buen plan y control de versiones."_
