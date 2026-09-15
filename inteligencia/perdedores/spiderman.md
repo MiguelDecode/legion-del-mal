@@ -8,3 +8,13 @@ Spiderman es un superhéroe ficticio que aparece en los cómics estadounidenses 
 3. Venom (Eddie Brock)
 4. Sandman (Flint Marko)
 5. Lagarto (Dr. Curt Connors)
+
+## Peliculas de Spiderman
+1. Spider-Man (2002) - Dirigida por Sam Raimi, protagonizada por Tobey Maguire.
+2. Spider-Man 2 (2004) - Dirigida por Sam Raimi, protagonizada por Tobey Maguire.
+3. Spider-Man 3 (2007) - Dirigida por Sam Raimi, protagonizada por Tobey Maguire.
+4. The  Amazing Spider-Man (2012) - Dirigida por Marc Webb, protagonizada por Andrew Garfield.
+5. The Amazing Spider-Man 2 (2014) - Dirigida por Marc Webb, protagonizada por Andrew Garfield.
+6. Spider-Man: Homecoming (2017) - Dirigida por Jon Watts, protagonizada por Tom Holland.
+7. Spider-Man: Far From Home (2019) - Dirigida por Jon Watts, protagonizada por Tom Holland.
+8. Spider-Man: No Way Home (2021) - Dirigida por Jon Watts, protagonizada por Tom Holland.
