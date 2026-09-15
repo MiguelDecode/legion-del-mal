@@ -18,3 +18,10 @@ Spiderman es un superhéroe ficticio que aparece en los cómics estadounidenses 
 6. Spider-Man: Homecoming (2017) - Dirigida por Jon Watts, protagonizada por Tom Holland.
 7. Spider-Man: Far From Home (2019) - Dirigida por Jon Watts, protagonizada por Tom Holland.
 8. Spider-Man: No Way Home (2021) - Dirigida por Jon Watts, protagonizada por Tom Holland.
+
+## Conocidos de Spiderman
+1. Mary Jane Watson - Interés amoroso de Peter Parker.
+2. Gwen Stacy - Interés amoroso de Peter Parker.
+3. Harry Osborn - Mejor amigo de Peter Parker y hijo del Duende Verde.
+4. J. Jonah Jameson - Editor del periódico Daily Bugle, conocido por su desprecio hacia Spiderman.
+5. Aunt May - Tía de Peter Parker, quien lo cría después de la muerte de sus padres.
