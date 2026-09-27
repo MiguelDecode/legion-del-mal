@@ -28,6 +28,6 @@ jobs:
           echo "Secret Plans:"
           ls planesn/
           echo "Villains:"
-          ls villanos/
+          ls miembros/
           echo "Inteligence:"
           ls inteligencia/
