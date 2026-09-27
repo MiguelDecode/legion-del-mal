@@ -1,7 +1,6 @@
 name: Recruitment of new aggent
 
-on:
-  workflow-dispatch:
+on: [workflow_dispatch]
 
 jobs: 
   report-recruitment:
