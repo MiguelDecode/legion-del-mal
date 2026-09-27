@@ -1,0 +1,19 @@
+ 
+name: Acces to the building
+
+on: push 
+
+jobs: 
+  security-access:
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: The agent arrives to the building
+        run: |
+          echo "Agent ${{github.actor}}"
+          echo "==="
+          echo "Search for the legion files"
+          ls -la
+          echo "==="
+          echo "X what's happening. Any file is found."
+
