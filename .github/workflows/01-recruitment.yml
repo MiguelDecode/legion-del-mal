@@ -10,5 +10,15 @@ jobs:
       - name: The agent introduce himself
         run: echo "Hello I'm the new agent, Lex Luthor."
 
-
+      - name: Report of identity
+        run: |
+          echo "Report of the indentity of the agent"
+          echo "============="
+          echo "Key name: ${{github.actor}}"
+          echo "============="
+          echo "Github Context"
+          echo "Repository: ${{github.repository}}"
+          echo "============="
+          echo "Operation: ${{github.sha}}"
+          echo "Metadata: ${{toJson(github)}}"
 
