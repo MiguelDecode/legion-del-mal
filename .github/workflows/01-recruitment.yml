@@ -1,0 +1,14 @@
+name: Recruitment of new aggent
+
+on: push 
+
+jobs: 
+  report-recruitment:
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: The agent introduce himself
+        run: echo "Hello I'm the new agent, Lex Luthor."
+
+
+
