@@ -26,7 +26,7 @@ jobs:
           ls -la
           echo "Works!!"
           echo "Secret Plans:"
-          ls planesn/
+          ls planes/
           echo "Villains:"
           ls miembros/
           echo "Inteligence:"
