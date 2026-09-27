@@ -22,3 +22,18 @@ jobs:
           echo "Operation: ${{github.sha}}"
           echo "Metadata: ${{toJson(github)}}"
 
+      - name: Agent halibities
+        run: |
+          echo "Agent halibities checked:"
+          echo "Operative System"
+          uname -a
+          echo "Tecnical habilities"
+          node --version
+          git --version
+          python3 --version
+
+      - name: Investigate the surrounds
+        run: |
+          echo "Investigate the surrounds"
+          ls /
+
