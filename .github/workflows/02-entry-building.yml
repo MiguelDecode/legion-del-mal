@@ -17,3 +17,17 @@ jobs:
           echo "==="
           echo "X what's happening. Any file is found."
 
+      - name: "Brainiac remove the accces to the vault"
+        uses: actions/checkout@v4
+
+      - name: "Now it's fine we can access to the plans"
+        run: |
+          echo "Search for the secret files of the Legion"
+          ls -la
+          echo "Works!!"
+          echo "Secret Plans:"
+          ls planesn/
+          echo "Villains:"
+          ls villanos/
+          echo "Inteligence:"
+          ls inteligencia/
