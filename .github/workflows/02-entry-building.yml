@@ -1,7 +1,7 @@
  
 name: Acces to the building
 
-on: push 
+on: [workflow_dispatch]
 
 jobs: 
   security-access:
