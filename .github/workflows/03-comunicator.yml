@@ -15,6 +15,21 @@ on:
           - Brainiac
           - Doom
 
+        message:
+          - description: "Message for the council"
+          - required: true
+          - default: "The mission was an exit"
+
+
+      priority:
+        description: "Priority level"
+        required: true
+        type: choice
+        options:
+          - Normal
+          - High
+          - Critical
+
 jobs:
   send_message:
     runs-on: ubuntu-latest
