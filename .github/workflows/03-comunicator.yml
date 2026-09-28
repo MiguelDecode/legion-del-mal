@@ -34,11 +34,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install the transmissor of the company
+        run: sudo apt-get install -y cowsay
+
       - name: Print inputs
         run: |
-          echo "Inputs: "
+          echo "===================================="
+          echo "      Transmission on course        "
+          echo "===================================="
           echo ""
-          echo "Villain: ${{inputs.villain}}"
-          echo "Message: ${{inputs.message}}"
-          echo "Priority: ${{inputs.priority}}"
+          echo "From: ${{ inputs.villain }}"
+          echo ""
+          echo "Date: $(date -u +"%d/%m/%Y - %H:%M UTC")"
+          echo "---------Message--------"
+          cowsay -f eyes "${{ inputs.message }}"
+          echo ""
+          echo "------ ${{ inputs.villain}}-------"
+          echo "..."
 
