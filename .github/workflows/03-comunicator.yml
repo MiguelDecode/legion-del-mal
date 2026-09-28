@@ -19,6 +19,15 @@ on:
         description: "Message for the council"
         required: true
         default: "The mission was an exit"
+        
+      cow_character:
+        description: "Decorate the message with a draw"
+        required: true
+        options:
+          - eyes
+          - bees
+          - taxi
+          - dragon
 
       priority:
         description: "Priority level"
@@ -47,7 +56,7 @@ jobs:
           echo ""
           echo "Date: $(date -u +"%d/%m/%Y - %H:%M UTC")"
           echo "---------Message--------"
-          cowsay -f eyes "${{ inputs.message }}"
+          cowsay -f "${{ inputs. cow_character}}" "${{ inputs.message }}"
           echo ""
           echo "------ ${{ inputs.villain}}-------"
           echo "..."
