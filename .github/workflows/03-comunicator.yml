@@ -15,10 +15,10 @@ on:
           - Brainiac
           - Doom
 
-        message:
-          - description: "Message for the council"
-          - required: true
-          - default: "The mission was an exit"
+      message:
+        - description: "Message for the council"
+        - required: true
+        - default: "The mission was an exit"
 
 
       priority:
