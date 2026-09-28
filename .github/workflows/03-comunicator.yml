@@ -1,0 +1,24 @@
+name: Comunicator of the legion
+
+on:
+  workflow_dispatch:
+    inputs:
+      villain:
+        description: "What villain send the message?"
+        required: true
+        type: choice
+        options:
+          - Lex Luthor
+          - Magneto
+          - Joker
+          - Mystyque
+          - Brainiac
+          - Doom
+
+jobs:
+  send_message:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
