@@ -23,6 +23,7 @@ on:
       cow_character:
         description: "Decorate the message with a draw"
         required: true
+        type: choice
         options:
           - eyes
           - bees
