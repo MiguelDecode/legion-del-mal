@@ -57,7 +57,7 @@ jobs:
           echo ""
           echo "Date: $(date -u +"%d/%m/%Y - %H:%M UTC")"
           echo "---------Message--------"
-          cowsay -f "${{ inputs. cow_character}}" "${{ inputs.message }}"
+          cowsay -f "${{ inputs.cow_character }}" "${{ inputs.message }}"
           echo ""
           echo "------ ${{ inputs.villain}}-------"
           echo "..."
