@@ -20,6 +20,28 @@ jobs:
           echo "✅ Your issue is being checked and is safe in the vault of the Legion."
           echo "'The data does not lie. Organic beings do.' - Brainiac"
 
+      - name: Brainiac sends email notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "🧠 Brainiac intercepted new Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}"
+          to: jockerwolf@gmail.com
+          from: Brainiac <${{ secrets.SMTP_USERNAME }}>
+          secure: true
+          body: |
+            Brainiac has received a new transmission.
+
+            Issue #${{ github.event.issue.number }}: '${{ github.event.issue.title }}'
+            Agent: ${{ github.event.issue.user.login }}
+            URL: ${{ github.event.issue.html_url }}
+
+            ✅ The issue is being checked and is safe in the vault of the Legion.
+
+            'The data does not lie. Organic beings do.' - Brainiac
+
       - name: Brainiac replies to the agent
         uses: actions/github-script@v9.0.0
         with:
