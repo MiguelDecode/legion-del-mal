@@ -1,0 +1,32 @@
+name: Welcome Brainiac - Guardian of Issues
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  welcome-issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Brainiac receives the transmission
+        run: |
+          echo "🧠 Brainiac has intercepted a new transmission."
+          echo "Issue #${{ github.event.issue.number }}: '${{ github.event.issue.title }}'"
+          echo "Agent: ${{ github.event.issue.user.login }}"
+          echo "✅ Your issue is being checked and is safe in the vault of the Legion."
+          echo "'The data does not lie. Organic beings do.' - Brainiac"
+
+      - name: Brainiac replies to the agent
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🧠 **Brainiac has received your transmission, @${context.payload.issue.user.login}.**\n\n✅ Your issue **"${context.payload.issue.title}"** is being checked and is safe in the vault of the Legion.\n\n_The Council will review it soon. Do not attempt to contact the Justice League in the meantime._\n\n_"The data does not lie. Organic beings do." — Brainiac v12.0_`
+            })
