@@ -1,0 +1,193 @@
+name: "08 - Tag to Release 🦹"
+
+# Cuando se pushea un tag v* (ej: v1.0.0) crea automáticamente
+# el GitHub Release con el git log y los cambios de esa versión.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag existente para (re)generar el Release (ej: v1.0.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout con historial completo y tags
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: 🏷️ Resolver tag actual y tag previo
+        id: tags
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            CURRENT_TAG="${{ inputs.tag }}"
+          else
+            CURRENT_TAG="${GITHUB_REF_NAME}"
+          fi
+
+          echo "🏷️ Tag actual: ${CURRENT_TAG}"
+
+          # Verificar que el tag existe localmente
+          if ! git rev-parse "${CURRENT_TAG}" >/dev/null 2>&1; then
+            echo "❌ El tag '${CURRENT_TAG}' no existe en el repo."
+            exit 1
+          fi
+
+          # Buscar el tag previo: el ancestro etiquetado más cercano al padre del commit del tag.
+          # Si falla (primer tag del repo), PREV_TAG queda vacío.
+          PREV_TAG=$(git describe --tags --abbrev=0 "${CURRENT_TAG}^" 2>/dev/null || echo "")
+
+          if [ -z "${PREV_TAG}" ]; then
+            echo "ℹ️ No se encontró tag previo. Será el primer Release."
+            RANGE="${CURRENT_TAG}"
+          else
+            echo "📌 Tag previo: ${PREV_TAG}"
+            RANGE="${PREV_TAG}..${CURRENT_TAG}"
+          fi
+
+          echo "current=${CURRENT_TAG}" >> "$GITHUB_OUTPUT"
+          echo "previous=${PREV_TAG}" >> "$GITHUB_OUTPUT"
+          echo "range=${RANGE}" >> "$GITHUB_OUTPUT"
+
+      - name: 🕵️ Detectar si es pre-release
+        id: prerelease
+        run: |
+          CURRENT_TAG="${{ steps.tags.outputs.current }}"
+          # Tags tipo v1.0.0-rc.1, v1.0.0-beta, v2.0.0-alpha.1 → pre-release
+          if [[ "${CURRENT_TAG}" == *"-"* ]]; then
+            echo "⚠️ Tag con sufijo '-' → se marcará como pre-release."
+            echo "value=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "✅ Tag estable."
+            echo "value=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 📜 Generar notas del Release (logs + cambios)
+        run: |
+          CURRENT_TAG="${{ steps.tags.outputs.current }}"
+          PREV_TAG="${{ steps.tags.outputs.previous }}"
+          RANGE="${{ steps.tags.outputs.range }}"
+
+          echo "=== Generando notas para rango: ${RANGE} ==="
+
+          # Mensaje/anotación del tag (git tag -a). Vacío si es lightweight tag.
+          TAG_MSG=$(git tag -l --format='%(contents)' "${CURRENT_TAG}" | head -n 20)
+
+          # Fecha del tag
+          TAG_DATE=$(git log -1 --format='%ad' --date=short "${CURRENT_TAG}")
+
+          # Log de commits del rango
+          if [ -n "${PREV_TAG}" ]; then
+            git log "${RANGE}" --pretty=format:'- %h %s (%an, %ad)' --date=short > /tmp/commits.txt || echo "_Sin commits en el rango._" > /tmp/commits.txt
+            COMPARE_URL="${{ github.server_url }}/${{ github.repository }}/compare/${PREV_TAG}...${CURRENT_TAG}"
+            COMPARE_LINE="🔗 **Comparar cambios:** ${COMPARE_URL}"
+            PREV_LINE="📌 **Versión anterior:** \`${PREV_TAG}\`"
+          else
+            git log "${CURRENT_TAG}" --pretty=format:'- %h %s (%an, %ad)' --date=short > /tmp/commits.txt || echo "_Sin commits._" > /tmp/commits.txt
+            COMPARE_LINE="🎉 **Primer Release de la Legión del Mal.**"
+            PREV_LINE="📌 **Versión anterior:** _(ninguna, es la primera)_"
+          fi
+
+          # Si no hay commits (tag sobre el mismo commit), avisar
+          if [ ! -s /tmp/commits.txt ]; then
+            echo "_Sin commits nuevos en este rango (tag creado sobre el mismo commit)._" > /tmp/commits.txt
+          fi
+
+          NUM_COMMITS=$(git rev-list --count "${RANGE}" 2>/dev/null || echo "0")
+          CONTRIBUTORS=$(git log "${RANGE}" --format='%an' 2>/dev/null | sort -u | sed 's/^/- 👤 /' || echo "_Desconocido_")
+
+          # Estadísticas de archivos cambiados
+          if [ -n "${PREV_TAG}" ]; then
+            DIFF_STAT=$(git diff --stat "${PREV_TAG}..${CURRENT_TAG}" 2>/dev/null || echo "Sin diff disponible.")
+            DIFF_SHORTSTAT=$(git diff --shortstat "${PREV_TAG}..${CURRENT_TAG}" 2>/dev/null || echo "")
+            CHANGED_FILES=$(git diff --name-status "${PREV_TAG}..${CURRENT_TAG}" 2>/dev/null | sed 's/^/- `/' | sed 's/\t/` → `/' | sed 's/$/`/' || echo "_Sin cambios detectados._")
+          else
+            DIFF_STAT=$(git show --stat --oneline "${CURRENT_TAG}" 2>/dev/null | head -n 30 || echo "Sin diff disponible.")
+            DIFF_SHORTSTAT=""
+            CHANGED_FILES="_Primer Release: ver el árbol completo del tag._"
+          fi
+
+          if [ -z "${TAG_MSG}" ]; then
+            TAG_MSG="_(Tag ligero, sin mensaje de anotación)_"
+          fi
+
+          cat > RELEASE_BODY.md <<EOF
+          # 🦹‍♂️ Legión del Mal — Release \`${CURRENT_TAG}\`
+
+          > _"El mundo no se conquista con fuerza bruta, se conquista con un buen plan y control de versiones."_ — Lex Luthor
+
+          | Dato | Valor |
+          | ---- | ----- |
+          | 🏷️ Tag | \`${CURRENT_TAG}\` |
+          | 📅 Fecha del tag | \`${TAG_DATE}\` |
+          | ${PREV_LINE} | |
+          | 📦 Commits en esta versión | \`${NUM_COMMITS}\` |
+          | 📊 Cambios | \`${DIFF_SHORTSTAT}\` |
+
+          ${COMPARE_LINE}
+
+          ---
+
+          ## 💬 Mensaje del tag
+
+          \`\`\`
+          ${TAG_MSG}
+          \`\`\`
+
+          ---
+
+          ## 📜 Git log — commits incluidos en esta versión
+
+          Rango: \`${RANGE}\`
+
+          $(cat /tmp/commits.txt)
+
+          ---
+
+          ## 📂 Archivos cambiados en esta versión
+
+          \`\`\`diff
+          ${DIFF_STAT}
+          \`\`\`
+
+          ### Detalle por archivo (estado + ruta)
+
+          ${CHANGED_FILES}
+
+          ---
+
+          ## 👥 Villanos contribuyentes en esta versión
+
+          ${CONTRIBUTORS}
+
+          ---
+
+          _Release generado automáticamente por Brainiac v12.0 al detectar el tag \`${CURRENT_TAG}\`._
+          _"Los datos no mienten. Los seres orgánicos sí."_
+          EOF
+
+          echo "===== RELEASE_BODY.md ====="
+          cat RELEASE_BODY.md
+
+      - name: 🚀 Crear GitHub Release desde el tag
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tags.outputs.current }}
+          name: "🦹 Legión del Mal ${{ steps.tags.outputs.current }}"
+          body_path: RELEASE_BODY.md
+          draft: false
+          prerelease: ${{ steps.prerelease.outputs.value }}
+          generate_release_notes: true
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
